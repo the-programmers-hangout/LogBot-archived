@@ -3,9 +3,6 @@ package me.moe.logbot.listeners
 import com.google.common.eventbus.Subscribe
 import me.moe.logbot.data.Configuration
 import me.moe.logbot.services.LoggingService
-import net.dv8tion.jda.api.events.emote.EmoteAddedEvent
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
 

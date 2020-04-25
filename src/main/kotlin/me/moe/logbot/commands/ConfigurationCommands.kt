@@ -4,17 +4,11 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.*
 import me.aberrantfox.kjdautils.internal.arguments.BooleanArg
 import me.aberrantfox.kjdautils.internal.arguments.ChoiceArg
-import me.aberrantfox.kjdautils.internal.arguments.RoleArg
-import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
 import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.moe.logbot.data.Configuration
-import me.moe.logbot.data.GuildConfiguration
-import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.locale.messages
 import me.moe.logbot.util.EmbedUtils.Companion.buildLoggerStatusEmbed
 import me.moe.logbot.util.EmbedUtils.Companion.buildLoggerToggledEmbed
-import net.dv8tion.jda.api.entities.GuildChannel
-import net.dv8tion.jda.api.entities.TextChannel
 
 @CommandSet("Configuration")
 fun configurationCommands(configuration: Configuration,

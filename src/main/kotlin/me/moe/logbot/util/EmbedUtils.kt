@@ -1,9 +1,6 @@
 package me.moe.logbot.util
 
-import me.aberrantfox.kjdautils.api.dsl.EmbedDSLHandle
 import me.aberrantfox.kjdautils.api.dsl.embed
-import net.dv8tion.jda.api.entities.Emote
-import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
 
