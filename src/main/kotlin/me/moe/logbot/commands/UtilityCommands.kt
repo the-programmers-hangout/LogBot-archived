@@ -5,8 +5,6 @@ import me.aberrantfox.kjdautils.api.dsl.command.*
 import java.awt.Color
 import java.util.Date
 
-
-class UtilityCommands
 private val startTime = Date()
 
 @CommandSet("Utility")

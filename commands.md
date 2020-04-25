@@ -5,6 +5,12 @@
 | ---------- | -------------------------- |
 | (Argument) | This argument is optional. |
 
+## Configuration
+| Commands     | Arguments         | Description             |
+| ------------ | ----------------- | ----------------------- |
+| LoggerStatus | <none>            | No Description Provider |
+| ToggleLogger | logger, On or Off | No Description Provider |
+
 ## Utility
 | Commands | Arguments | Description                                 |
 | -------- | --------- | ------------------------------------------- |
