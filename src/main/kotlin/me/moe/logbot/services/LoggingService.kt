@@ -28,27 +28,30 @@ class LoggingService(private val config: Configuration) {
         Emotes
 
      */
-    fun buildEmoteLoggerEmbed(guild: Guild, emote: Emote, created: Boolean) = withLog(guild) {
+    fun buildEmoteAddedEmbed(guild: Guild, emote: Emote) = withLog(guild) {
         embed {
-            title = "Emoji ${if (created) "added" else "removed"}"
-            description = "The emote `${emote.name}` has been ${if (created) "added" else "removed"}"
-            color = if (created) Color.GREEN else Color.RED
+            title = "Emote Added"
+            description = "The emote `${emote.name}` has been added"
+            color = Color.RED
             image = emote.imageUrl
-            footer {
-                text = LocalDateTime.now().format(dateTimeFormatter)
-            }
+        }
+    }
+
+    fun buildEmoteDeletedEmbed(guild: Guild, emote: Emote) = withLog(guild) {
+        embed {
+            title = "Emote Removed"
+            description = "The emote `${emote.name}` has been removed"
+            color = Color.RED
+            image = emote.imageUrl
         }
     }
 
     fun buildEmoteRenameEmbed(guild: Guild, event: EmoteUpdateNameEvent) = withLog(guild) {
         embed {
-            title = "Emote rename"
+            title = "Emote Renamed"
             description = "The emote `${event.oldName}` has been renamed to `${event.newName}`"
             color = Color.WHITE
             image = event.emote.imageUrl
-            footer {
-                text = LocalDateTime.now().format(dateTimeFormatter)
-            }
         }
     }
 
@@ -58,24 +61,63 @@ class LoggingService(private val config: Configuration) {
 
      */
 
-    fun buildMemberLoggerEmbed(guild: Guild, user: User, join: Boolean) = withLog(guild) {
+    fun buildMemberJoinEmbed(guild: Guild, user: User) = withLog(guild) {
         embed {
-            title = "User ${if (join) "join" else "leave"}"
-            description = "${user.asMention} :: ${user.descriptor()}\n" +
-                    "created at " + "${user.timeCreated.format(dateTimeFormatter)} " +
-                    "${if (join) "joined" else "left"} the server"
+            title = "User joined"
+            color = Color.GREEN
 
-            color = if (join) Color.GREEN else Color.RED
-            author {
-                name = user.name + if (join) " joined" else " left"
-                iconUrl = user.avatarUrl
+            field {
+                name = "User"
+                value = "**${user.asMention} :: ${user.descriptor()}**"
             }
-            footer {
-                text = LocalDateTime.now().format(dateTimeFormatter)
+            field {
+                name = "Created at"
+                value = "${user.timeCreated.format(dateTimeFormatter)} "
             }
         }
     }
 
+    fun buildMemberLeaveEmbed(guild: Guild, user: User) = withLog(guild) {
+        embed {
+            title = "User left"
+            color = Color.RED
+
+            field {
+                name = "User"
+                value = "**${user.asMention} :: ${user.descriptor()}**"
+            }
+        }
+    }
+
+    /*
+
+        Bans/Unbans
+
+     */
+
+    fun buildMemberBanEmbed(guild: Guild, user: User) = withLog(guild) {
+        embed {
+            title = "User Banned"
+            color = Color.RED
+
+            field {
+                name = "User"
+                value = "**${user.asMention} :: ${user.descriptor()}**"
+            }
+        }
+    }
+
+    fun buildMemberUnbanEmbed(guild: Guild, user: User) = withLog(guild) {
+        embed {
+            title = "User Unbanned"
+            color = Color.GREEN
+
+            field {
+                name = "User"
+                value = "**${user.asMention} :: ${user.descriptor()}**"
+            }
+        }
+    }
 
     private fun getLogConfig(guildId: String) = config.getGuildConfig(guildId)!!.loggingChannel
     private fun log(guild: Guild, logChannelId: String, message: MessageEmbed) = logChannelId.takeIf { it.isNotEmpty() }?.idToTextChannel(guild)
