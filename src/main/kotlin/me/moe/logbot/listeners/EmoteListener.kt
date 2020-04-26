@@ -15,7 +15,7 @@ class EmoteListener(private val configuration: Configuration, private val logger
                 ?: return
 
         if (config.trackEmotes)
-            logger.buildEmoteAddedEmbed(event.guild, event.emote)
+            logger.buildEmoteAddedEmbed(event)
     }
 
     @Subscribe
@@ -24,7 +24,7 @@ class EmoteListener(private val configuration: Configuration, private val logger
                 ?: return
 
         if (config.trackEmotes)
-            logger.buildEmoteDeletedEmbed(event.guild, event.emote)
+            logger.buildEmoteDeletedEmbed(event)
     }
 
     @Subscribe
@@ -33,6 +33,6 @@ class EmoteListener(private val configuration: Configuration, private val logger
                 ?: return
 
         if (config.trackEmotes)
-            logger.buildEmoteRenameEmbed(event.guild, event)
+            logger.buildEmoteRenameEmbed(event)
     }
 }

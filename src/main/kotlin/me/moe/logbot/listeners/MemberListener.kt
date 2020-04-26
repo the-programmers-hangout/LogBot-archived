@@ -14,7 +14,7 @@ class MemberListener(private val configuration: Configuration, private val logge
                 ?: return
 
         if (config.trackMembers)
-            logger.buildMemberJoinEmbed(event.guild, event.user)
+            logger.buildMemberJoinEmbed(event)
     }
 
     @Subscribe
@@ -23,6 +23,6 @@ class MemberListener(private val configuration: Configuration, private val logge
                 ?: return
 
         if (config.trackMembers)
-            logger.buildMemberLeaveEmbed(event.guild, event.user)
+            logger.buildMemberLeaveEmbed(event)
     }
 }
