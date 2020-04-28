@@ -14,7 +14,7 @@ import me.moe.logbot.util.EmbedUtils.Companion.buildLoggerToggledEmbed
 fun configurationCommands(configuration: Configuration,
                           persistenceService: PersistenceService) = commands {
 
-    command("ToggleLogger") {
+    command("Toggle") {
         execute(
             ChoiceArg(name=listOfLoggers.joinToString(separator = " | "), choices = *listOfLoggers.toTypedArray()),
             BooleanArg("On or Off", "On", "Off")) {
@@ -44,7 +44,7 @@ fun configurationCommands(configuration: Configuration,
         }
     }
 
-    command("LoggerStatus") {
+    command("Status") {
         execute {
             val config = configuration.getGuildConfig(it.guild!!.id)
                 ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)

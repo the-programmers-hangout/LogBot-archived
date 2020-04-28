@@ -25,6 +25,7 @@ data class GuildConfiguration(var guildId: String = "insert_id",
 data class Configuration(val prefix: String = "++",
 
                          val botOwner: String = "insert_id",
+                         val maxCacheAmount: Int = 5000,
                          var guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(GuildConfiguration())) {
 
     fun hasGuildConfig(guildId: String) = getGuildConfig(guildId) != null
