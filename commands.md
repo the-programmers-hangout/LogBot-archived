@@ -6,10 +6,10 @@
 | (Argument) | This argument is optional. |
 
 ## Configuration
-| Commands     | Arguments         | Description             |
-| ------------ | ----------------- | ----------------------- |
-| LoggerStatus | <none>            | No Description Provider |
-| ToggleLogger | logger, On or Off | No Description Provider |
+| Commands     | Arguments                                                                                                              | Description             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| LoggerStatus | <none>                                                                                                                 | No Description Provider |
+| ToggleLogger | emotes \| members \| bans \| roles \| nicknames \| messages \| reactions \| voice \| channels \| categories, On or Off | No Description Provider |
 
 ## Utility
 | Commands | Arguments | Description                                 |
