@@ -3,7 +3,7 @@ package me.moe.logbot.data
 import me.aberrantfox.kjdautils.api.annotation.Data
 
 data class GuildConfiguration(var guildId: String = "insert_id",
-                              var ignoreRoleName: String = "Staff",
+                              var ignoreRoleNames: List<String> = listOf("Staff", "Active"),
                               var staffRoleName: String = "Admin",
                               var loggingChannel: String = "insert_id",
                               var historyChannel: String ="insert_id",
