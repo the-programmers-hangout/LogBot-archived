@@ -16,7 +16,7 @@ fun configurationCommands(configuration: Configuration,
 
     command("ToggleLogger") {
         execute(
-            ChoiceArg(name="logger", choices = *listOfLoggers.toTypedArray()),
+            ChoiceArg(name=listOfLoggers.joinToString(separator = " | "), choices = *listOfLoggers.toTypedArray()),
             BooleanArg("On or Off", "On", "Off")) {
 
             val logger = it.args.component1()
