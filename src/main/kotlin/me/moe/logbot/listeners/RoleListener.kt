@@ -15,7 +15,7 @@ class RoleListener(private val configuration: Configuration, private val logger:
         val config = configuration.getGuildConfig(event.guild.id)
                 ?: return
 
-        if (config.trackMembers)
+        if (config.trackRoles)
             logger.buildRoleAddEmbed(event)
     }
 
@@ -24,7 +24,7 @@ class RoleListener(private val configuration: Configuration, private val logger:
         val config = configuration.getGuildConfig(event.guild.id)
                 ?: return
 
-        if (config.trackMembers)
+        if (config.trackRoles)
             logger.buildRoleRemoveEmbed(event)
     }
 }
