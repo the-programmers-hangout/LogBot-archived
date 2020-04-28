@@ -4,12 +4,10 @@ import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.descriptor
 import me.moe.logbot.data.Configuration
+import me.moe.logbot.extensions.createContinuableField
 import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.extensions.verboseDescriptor
-import net.dv8tion.jda.api.entities.Emote
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.MessageEmbed
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.emote.EmoteAddedEvent
 import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
 import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
@@ -19,6 +17,10 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
 import java.awt.Color
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,6 +32,11 @@ class LoggingService(private val config: Configuration) {
     private fun withLog(guild: Guild, f: () -> MessageEmbed) =
             getLogConfig(guild.id).apply {
                 log(guild, getLogConfig(guild.id), f())
+            }
+
+    private fun withHistory(guild: Guild, f: () -> MessageEmbed) =
+            getHistoryConfig(guild.id).apply {
+                log(guild, getHistoryConfig(guild.id), f())
             }
 
 
@@ -173,7 +180,91 @@ class LoggingService(private val config: Configuration) {
         }
     }
 
+    /*
+
+        Nicknames
+
+     */
+
+    fun buildNicknameChangeEmbed(event: GuildMemberUpdateNicknameEvent) = withLog(event.guild) {
+        embed {
+            title = "Nickname ${if (event.newNickname == null) "Reset" else "Updated"}"
+            color = Color.CYAN
+
+            field {
+                name = "User"
+                value = event.user.verboseDescriptor()
+            }
+
+            if (event.oldNickname != null)
+                field {
+                    name = "Old Nickname"
+                    value = event.oldNickname
+                }
+
+            if (event.newNickname != null)
+                field {
+                    name = "New Nickname"
+                    value = event.newNickname
+                }
+        }
+    }
+
+    /*
+
+        Message Tracking
+
+     */
+
+    fun buildMessageDeletedEmbed(event: GuildMessageDeleteEvent, deletedMessage: Message) = withHistory(event.guild) {
+        embed {
+            title = "Message Deleted"
+            color = Color.RED
+
+            field {
+                name = "User"
+                value = deletedMessage.author.verboseDescriptor()
+            }
+
+            field {
+                name = "Channel"
+                value = deletedMessage.textChannel.descriptor()
+            }
+
+            createContinuableField("Message Content", deletedMessage.contentRaw)
+
+            if (deletedMessage.attachments.isNotEmpty()) {
+                field {
+                    name = "Files"
+                    value = deletedMessage.attachments.joinToString(separator = "\n") { it.url }
+                }
+            }
+        }
+    }
+
+    fun buildMessageEditedEmbed(event: GuildMessageUpdateEvent, oldMessage: Message) = withHistory(event.guild) {
+        embed {
+            title = "Message Edited"
+            description = event.message.jumpUrl
+            color = Color.ORANGE
+
+            field {
+                name = "User"
+                value = event.author.verboseDescriptor()
+            }
+
+            field {
+                name = "Channel"
+                value = oldMessage.textChannel.descriptor()
+            }
+
+            createContinuableField("Old", oldMessage.contentRaw)
+            createContinuableField("New", event.message.contentRaw)
+        }
+    }
+
     private fun getLogConfig(guildId: String) = config.getGuildConfig(guildId)!!.loggingChannel
+    private fun getHistoryConfig(guildId: String) = config.getGuildConfig(guildId)!!.historyChannel
     private fun log(guild: Guild, logChannelId: String, message: MessageEmbed) = logChannelId.takeIf { it.isNotEmpty() }?.idToTextChannel(guild)
             ?.sendMessage(message)?.queue()
 
