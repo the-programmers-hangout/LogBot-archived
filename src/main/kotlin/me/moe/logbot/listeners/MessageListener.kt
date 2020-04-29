@@ -57,7 +57,16 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
     @Subscribe
     fun onGuildMessageDelete(event: GuildMessageDeleteEvent) {
         val messageCache: LimitedList<Message> = messageCaches[event.guild.id] ?: return
-        val cachedMessage = messageCaches[event.guild.id]?.find { it.id == event.messageId } ?: return
+        val cachedMessage = messageCache.find { it.id == event.messageId } ?: return
+
+        val author = cachedMessage.author
+        if (author.isBot) return
+        if (author.toMember(event.guild) == null) return
+
+        val config = configuration.getGuildConfig(event.guild.id)
+                ?: return
+
+        if (shouldBeLogged(author.toMember(event.guild)!!, config)) return
 
         logger.buildMessageDeletedEmbed(event, cachedMessage)
     }
