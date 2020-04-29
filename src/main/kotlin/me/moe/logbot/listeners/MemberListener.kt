@@ -18,6 +18,15 @@ class MemberListener(private val configuration: Configuration, private val logge
     }
 
     @Subscribe
+    fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {
+        print(event)
+        val member = event.member
+        val user = event.user
+        val guild = event.guild
+
+    }
+
+    @Subscribe
     fun onMemberLeave(event: GuildMemberLeaveEvent) {
         val config = configuration.getGuildConfig(event.guild.id)
                 ?: return

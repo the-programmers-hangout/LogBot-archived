@@ -11,6 +11,11 @@
 | Status   | <none>                                                                                                                 | No Description Provider |
 | Toggle   | emotes \| members \| bans \| roles \| nicknames \| messages \| reactions \| voice \| channels \| categories, On or Off | No Description Provider |
 
+## RoleConfiguration
+| Commands     | Arguments | Description             |
+| ------------ | --------- | ----------------------- |
+| IgnoredRoles | <none>    | No Description Provider |
+
 ## Utility
 | Commands | Arguments | Description                                 |
 | -------- | --------- | ------------------------------------------- |

@@ -6,7 +6,9 @@ import me.aberrantfox.kjdautils.internal.arguments.BooleanArg
 import me.aberrantfox.kjdautils.internal.arguments.ChoiceArg
 import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.moe.logbot.data.Configuration
+import me.moe.logbot.extensions.requiredPermissionLevel
 import me.moe.logbot.locale.messages
+import me.moe.logbot.services.Permission
 import me.moe.logbot.util.EmbedUtils.Companion.buildLoggerStatusEmbed
 import me.moe.logbot.util.EmbedUtils.Companion.buildLoggerToggledEmbed
 
@@ -15,6 +17,7 @@ fun configurationCommands(configuration: Configuration,
                           persistenceService: PersistenceService) = commands {
 
     command("Toggle") {
+        requiredPermissionLevel = Permission.Staff
         execute(
             ChoiceArg(name=listOfLoggers.joinToString(separator = " | "), choices = *listOfLoggers.toTypedArray()),
             BooleanArg("On or Off", "On", "Off")) {
@@ -45,6 +48,7 @@ fun configurationCommands(configuration: Configuration,
     }
 
     command("Status") {
+        requiredPermissionLevel = Permission.Staff
         execute {
             val config = configuration.getGuildConfig(it.guild!!.id)
                 ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)

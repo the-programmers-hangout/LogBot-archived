@@ -2,6 +2,8 @@ package me.moe.logbot.commands
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.*
+import me.moe.logbot.extensions.requiredPermissionLevel
+import me.moe.logbot.services.Permission
 import java.awt.Color
 import java.util.Date
 
@@ -10,6 +12,7 @@ private val startTime = Date()
 @CommandSet("Utility")
 fun utilityCommands() = commands {
     command("Ping") {
+        requiredPermissionLevel = Permission.Staff
         description = "Display the network ping of the bot."
         execute {
             it.respond("Responded in ${it.channel.jda.gatewayPing}ms")
@@ -17,6 +20,7 @@ fun utilityCommands() = commands {
     }
 
     command("Uptime") {
+        requiredPermissionLevel = Permission.Staff
         description = "Displays how long the bot has been running."
         execute {
             val milliseconds = Date().time - startTime.time

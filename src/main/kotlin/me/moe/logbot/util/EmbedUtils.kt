@@ -36,5 +36,12 @@ class EmbedUtils {
                     }
             }
         }
+
+        fun buildIgnoredRolesEmbed(ignoredRoles: List<String>): MessageEmbed {
+            ignoredRoles.map {  }
+            return embed {
+
+            }
+        }
     }
 }
