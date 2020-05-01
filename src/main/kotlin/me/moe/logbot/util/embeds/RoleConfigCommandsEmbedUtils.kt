@@ -1,10 +1,11 @@
-package me.moe.logbot.util
+package me.moe.logbot.util.embeds
 
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.moe.logbot.extensions.createContinuableField
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
 
-class EmbedUtils {
+class RoleConfigCommandsEmbedUtils {
     companion object {
         fun buildLoggerToggledEmbed(logger: String, active: Boolean): MessageEmbed {
             val colour: Color = if (active) Color.GREEN else Color.RED
@@ -20,7 +21,7 @@ class EmbedUtils {
                                    disabledLoggers: MutableList<String>): MessageEmbed {
             return embed {
 
-                title = "Logger Status"
+                title = "Logger status"
                 color = Color.ORANGE
 
                 if (enabledLoggers.isNotEmpty())
@@ -34,13 +35,6 @@ class EmbedUtils {
                         name = "Disabled"
                         value = disabledLoggers.joinToString(separator = "\n")
                     }
-            }
-        }
-
-        fun buildIgnoredRolesEmbed(ignoredRoles: List<String>): MessageEmbed {
-            ignoredRoles.map {  }
-            return embed {
-
             }
         }
     }

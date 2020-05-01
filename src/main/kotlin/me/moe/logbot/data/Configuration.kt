@@ -5,10 +5,9 @@ import me.aberrantfox.kjdautils.api.annotation.Data
 data class GuildConfiguration(var guildId: String = "insert_id",
                               var adminRole: String = "insert_role",
                               var staffRole: String = "insert_role",
-                              var ignoreRoleNames: List<String> = listOf("Staff", "Active"),
+                              var ignoreRoleNames: MutableList<String> = mutableListOf("Staff", "Active"),
                               var loggingChannel: String = "insert_id",
                               var historyChannel: String ="insert_id",
-                              // the latest 4000 messages will be tracked for edits/deletions
                               var messageCacheAmount: Int = 4000,
                               var trackEmotes: Boolean = true,
                               var trackMembers: Boolean = true,
