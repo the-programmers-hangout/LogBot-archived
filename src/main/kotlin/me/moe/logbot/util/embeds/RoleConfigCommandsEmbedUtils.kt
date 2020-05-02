@@ -2,39 +2,65 @@ package me.moe.logbot.util.embeds
 
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.moe.logbot.extensions.createContinuableField
+import me.moe.logbot.extensions.descriptor
 import net.dv8tion.jda.api.entities.MessageEmbed
+import net.dv8tion.jda.api.entities.Role
 import java.awt.Color
 
 class RoleConfigCommandsEmbedUtils {
     companion object {
-        fun buildLoggerToggledEmbed(logger: String, active: Boolean): MessageEmbed {
-            val colour: Color = if (active) Color.GREEN else Color.RED
-            val status: String = if (active) "active" else "not active"
-
+        fun buildIgnoredRolesEmbed(ignoredRoles: List<String>): MessageEmbed {
+            ignoredRoles.map {  }
             return embed {
-                title = "The logging of $logger is now $status."
-                color = colour
+                title = "Ignored roles"
+                description = "These are roles that will not be tracked by the message logger."
+                color = infoColor
+
+                createContinuableField("Roles", ignoredRoles.joinToString(separator = "\n"))
             }
         }
 
-        fun buildLoggerStatusEmbed(enabledLoggers: MutableList<String>,
-                                   disabledLoggers: MutableList<String>): MessageEmbed {
+        fun buildAlreadyIgnoredEmbed(role: Role): MessageEmbed {
             return embed {
+                title = "Role is already ignored"
+                field {
+                    name = "Role"
+                    value = role.descriptor()
+                }
+                color = failureColor
+            }
+        }
 
-                title = "Logger status"
-                color = Color.ORANGE
+        fun buildNotIgnoredEmbed(role: Role): MessageEmbed {
+            return embed {
+                title = "Role is not ignored"
+                field {
+                    name = "Role"
+                    value = role.descriptor()
+                }
+                color = failureColor
+            }
+        }
 
-                if (enabledLoggers.isNotEmpty())
-                    field {
-                        name = "Enabled"
-                        value = enabledLoggers.joinToString(separator = "\n")
-                    }
+        fun buildIgnoredEmbed(role: Role): MessageEmbed {
+            return embed {
+                title = "Role added to the ignore list"
+                field {
+                    name = "Role"
+                    value = role.descriptor()
+                }
+                color = successColor
+            }
+        }
 
-                if (disabledLoggers.isNotEmpty())
-                    field {
-                        name = "Disabled"
-                        value = disabledLoggers.joinToString(separator = "\n")
-                    }
+        fun buildUnignoredEmbed(role: Role): MessageEmbed {
+            return embed {
+                title = "Role removed from the ignore list"
+                field {
+                    name = "Role"
+                    value = role.descriptor()
+                }
+                color = successColor
             }
         }
     }

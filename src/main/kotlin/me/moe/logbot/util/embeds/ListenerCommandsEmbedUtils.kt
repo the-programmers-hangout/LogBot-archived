@@ -8,38 +8,34 @@ import java.awt.Color
 
 class ListenerCommandsEmbedUtils {
     companion object {
-        fun buildIgnoredRolesEmbed(ignoredRoles: List<String>): MessageEmbed {
-            ignoredRoles.map {  }
-            return embed {
-                title = "Ignored roles"
-                description = "These are roles that will not be tracked by the message logger."
-                color = infoColor
+        fun buildLoggerToggledEmbed(logger: String, active: Boolean): MessageEmbed {
+            val colour: Color = if (active) Color.GREEN else Color.RED
+            val status: String = if (active) "active" else "not active"
 
-                createContinuableField("Roles", ignoredRoles.joinToString(separator = "\n"))
+            return embed {
+                title = "The logging of $logger is now $status."
+                color = colour
             }
         }
 
-        fun buildAlreadyIgnoredEmbed(role: Role): MessageEmbed {
-            return embed {
-                title = "Role is already ignored"
-            }
-        }
-
-        fun buildNotIgnoredEmbed(role: Role): MessageEmbed {
+        fun buildLoggerStatusEmbed(enabledLoggers: MutableList<String>,
+                                   disabledLoggers: MutableList<String>): MessageEmbed {
             return embed {
 
-            }
-        }
+                title = "Logger status"
+                color = Color.ORANGE
 
-        fun buildIgnoredEmbed(role: Role): MessageEmbed {
-            return embed {
+                if (enabledLoggers.isNotEmpty())
+                    field {
+                        name = "Enabled"
+                        value = enabledLoggers.joinToString(separator = "\n")
+                    }
 
-            }
-        }
-
-        fun buildUnignoredEmbed(role: Role): MessageEmbed {
-            return embed {
-
+                if (disabledLoggers.isNotEmpty())
+                    field {
+                        name = "Disabled"
+                        value = disabledLoggers.joinToString(separator = "\n")
+                    }
             }
         }
     }

@@ -6,10 +6,10 @@
 | (Argument) | This argument is optional. |
 
 ## Listeners
-| Commands | Arguments                                                                                                              | Description             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| Status   | <none>                                                                                                                 | No Description Provider |
-| Toggle   | emotes \| members \| bans \| roles \| nicknames \| messages \| reactions \| voice \| channels \| categories, On or Off | No Description Provider |
+| Commands        | Arguments                                                                                                              | Description             |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| ListeningStatus | <none>                                                                                                                 | No Description Provider |
+| ToggleListener  | emotes \| members \| bans \| roles \| nicknames \| messages \| reactions \| voice \| channels \| categories, On or Off | No Description Provider |
 
 ## RoleConfiguration
 | Commands     | Arguments | Description             |

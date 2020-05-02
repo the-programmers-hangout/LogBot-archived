@@ -8,7 +8,11 @@ import me.moe.logbot.data.Configuration
 import me.moe.logbot.extensions.requiredPermissionLevel
 import me.moe.logbot.locale.messages
 import me.moe.logbot.services.Permission
-import me.moe.logbot.util.embeds.ListenerCommandsEmbedUtils.Companion.buildIgnoredRolesEmbed
+import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildAlreadyIgnoredEmbed
+import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildIgnoredEmbed
+import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildIgnoredRolesEmbed
+import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildNotIgnoredEmbed
+import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildUnignoredEmbed
 
 
 @CommandSet("RoleConfiguration")
@@ -17,7 +21,9 @@ fun roleConfigCommands(configuration: Configuration,
 
     command("IgnoredRoles") {
         requiredPermissionLevel = Permission.Staff
+        description = messages.descriptions.IGNORED_ROLES
         execute {
+            it.container.commands
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
 
@@ -27,13 +33,14 @@ fun roleConfigCommands(configuration: Configuration,
 
     command("IgnoreRole") {
         requiredPermissionLevel = Permission.Administrator
+        description = messages.descriptions.IGNORE_ROLE
         execute(RoleArg) {
             val role = it.args.first
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
 
             if (config.ignoreRoleNames.contains(role.name)) {
-                it.respond("${role.name} is already ignored")
+                it.respond(buildAlreadyIgnoredEmbed(role))
 
                 return@execute
             }
@@ -41,19 +48,20 @@ fun roleConfigCommands(configuration: Configuration,
             config.ignoreRoleNames.add(role.name)
             persistenceService.save(configuration)
 
-            it.respond("ignoring ${role.name}")
+            it.respond(buildIgnoredEmbed(role))
         }
     }
 
     command("UnignoreRole") {
         requiredPermissionLevel = Permission.Administrator
+        description = messages.descriptions.UNIGNORE_ROLE
         execute(RoleArg) {
             val role = it.args.first
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
 
             if (!config.ignoreRoleNames.contains(role.name)) {
-                it.respond("${role.name} is not ignored")
+                it.respond(buildNotIgnoredEmbed(role))
 
                 return@execute
             }
@@ -61,7 +69,7 @@ fun roleConfigCommands(configuration: Configuration,
             config.ignoreRoleNames.remove(role.name)
             persistenceService.save(configuration)
 
-            it.respond("ignoring ${role.name}")
+            it.respond(buildUnignoredEmbed(role))
         }
     }
 

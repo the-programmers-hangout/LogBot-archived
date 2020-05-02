@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.moe.logbot.data.Configuration
+import me.moe.logbot.locale.Messages
 import java.awt.Color
 import java.util.*
 
@@ -41,7 +42,7 @@ class StartupService(configuration: Configuration,
                     color = infoColor
                     thumbnail = self.effectiveAvatarUrl
 
-                    addField(self.fullName(), "bleeeeeeeeeeeeeeee")
+                    addField(self.fullName(), Messages().utils.BOT_DESC)
 
                     addInlineField("Prefix", configuration.prefix)
                     addInlineField("Ping", "${discord.jda.gatewayPing}ms")

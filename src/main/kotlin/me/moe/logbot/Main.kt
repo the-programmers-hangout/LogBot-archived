@@ -7,7 +7,7 @@ import me.moe.logbot.data.Configuration
 import me.moe.logbot.locale.Messages
 
 fun main(args: Array<String>) {
-    val token = args.firstOrNull() ?: return println(Messages().errors.NO_ARGS)
+    val token = args.firstOrNull() ?: return println("No program arguments provided. Expected bot token.")
 
     startBot(token) {
         configure {

@@ -9,15 +9,16 @@ import me.moe.logbot.data.Configuration
 import me.moe.logbot.extensions.requiredPermissionLevel
 import me.moe.logbot.locale.messages
 import me.moe.logbot.services.Permission
-import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildLoggerStatusEmbed
-import me.moe.logbot.util.embeds.RoleConfigCommandsEmbedUtils.Companion.buildLoggerToggledEmbed
+import me.moe.logbot.util.embeds.ListenerCommandsEmbedUtils.Companion.buildLoggerStatusEmbed
+import me.moe.logbot.util.embeds.ListenerCommandsEmbedUtils.Companion.buildLoggerToggledEmbed
 
 @CommandSet("Listeners")
 fun listenerCommands(configuration: Configuration,
                           persistenceService: PersistenceService) = commands {
 
-    command("Status") {
+    command("ListeningStatus") {
         requiredPermissionLevel = Permission.Staff
+        description = messages.descriptions.LISTENER_STATUS
         execute {
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
@@ -42,8 +43,9 @@ fun listenerCommands(configuration: Configuration,
         }
     }
 
-    command("Toggle") {
+    command("ToggleListener") {
         requiredPermissionLevel = Permission.Staff
+        description = messages.descriptions.TOGGLE_LISTENER
         execute(
             ChoiceArg(name=listOfLoggers.joinToString(separator = " | "), choices = *listOfLoggers.toTypedArray()),
             BooleanArg("On or Off", "On", "Off")) {
