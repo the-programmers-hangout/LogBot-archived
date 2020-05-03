@@ -5,7 +5,7 @@ import me.aberrantfox.kjdautils.api.annotation.Data
 data class GuildConfiguration(var guildId: String = "insert_id",
                               var adminRole: String = "insert_role",
                               var staffRole: String = "insert_role",
-                              var ignoreRoleNames: MutableList<String> = mutableListOf("Staff", "Active"),
+                              var ignoreRoleNames: MutableList<String> = mutableListOf(),
                               var loggingChannel: String = "insert_id",
                               var historyChannel: String ="insert_id",
                               var messageCacheAmount: Int = 4000,

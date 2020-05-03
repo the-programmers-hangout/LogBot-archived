@@ -22,7 +22,9 @@ class Errors (
     val GUILD_NOT_SETUP: String = "This guild is not set up for use. Please use the `setup` command.",
     val GUILD_ALREADY_SETUP: String = "This guild has already been setup for use.",
     val COMMAND_OWNER_ONLY: String = "This command must be run by the bot owner.",
-    val COMMAND_GUILD_OWNER_ONLY: String = "This command must be run by the guild owner."
+    val COMMAND_GUILD_OWNER_ONLY: String = "This command must be run by the guild owner.",
+
+    val DMS_CLOSED: String = "Unable to contact the target user. Direct messages are disabled or the bot is blocked."
 )
 
 class Utils (
