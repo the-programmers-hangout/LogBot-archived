@@ -51,7 +51,7 @@ class GuildSetupConversation(): Conversation() {
         val messageCacheAmt = blockingPromptUntil(
             IntegerArg,
             { "How many messages would you like to cache?" },
-            { cacheAmt -> cacheAmt > 0 && cacheAmt <= config!!.maxCacheAmount },
+            { cacheAmt -> cacheAmt > 0 || cacheAmt <= config!!.maxCacheAmount },
             { "You can only cache between 1 and ${config!!.maxCacheAmount}" }
         )
 

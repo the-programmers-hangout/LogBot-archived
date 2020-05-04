@@ -5,18 +5,25 @@ import me.moe.logbot.extensions.createContinuableField
 import me.moe.logbot.extensions.descriptor
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.Role
-import java.awt.Color
 
 class RoleConfigCommandsEmbedUtils {
     companion object {
         fun buildIgnoredRolesEmbed(ignoredRoles: List<String>): MessageEmbed {
-            ignoredRoles.map {  }
             return embed {
                 title = "Ignored roles"
                 description = "These are roles that will not be tracked by the message logger."
-                color = infoColor
 
-                createContinuableField("Roles", ignoredRoles.joinToString(separator = "\n"))
+
+                if (ignoredRoles.isEmpty()) {
+                    color = failureColor
+                    field {
+                        name = "Roles"
+                        value = "There are currently no rules being ignored."
+                    }
+                } else {
+                    color = infoColor
+                    createContinuableField("Roles", ignoredRoles.joinToString(separator = "\n"))
+                }
             }
         }
 

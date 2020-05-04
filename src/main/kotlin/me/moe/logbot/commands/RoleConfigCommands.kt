@@ -2,9 +2,11 @@ package me.moe.logbot.commands
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.moe.logbot.data.Configuration
+import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.extensions.requiredPermissionLevel
 import me.moe.logbot.locale.messages
 import me.moe.logbot.services.Permission
@@ -24,10 +26,16 @@ fun roleConfigCommands(configuration: Configuration,
         description = messages.descriptions.IGNORED_ROLES
         execute {
             it.container.commands
+
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
 
-            it.respond(buildIgnoredRolesEmbed(config.ignoreRoleNames))
+            val test = config.ignoreRoleNames.map {ignoredRole ->
+                val role = it.guild!!.getRoleByName(ignoredRole)
+                role?.descriptor() ?: "$ignoredRole (invalid role)"
+            }
+
+            it.respond(buildIgnoredRolesEmbed(test))
         }
     }
 
