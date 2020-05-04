@@ -4,7 +4,7 @@ import com.google.common.eventbus.Subscribe
 import me.moe.logbot.data.Configuration
 import me.moe.logbot.services.LoggingService
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent
 
 class MemberListener(private val configuration: Configuration, private val logger: LoggingService) {
 
@@ -18,20 +18,17 @@ class MemberListener(private val configuration: Configuration, private val logge
     }
 
     @Subscribe
-    fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {
-        print(event)
-        val member = event.member
-        val user = event.user
-        val guild = event.guild
-
-    }
-
-    @Subscribe
-    fun onMemberLeave(event: GuildMemberLeaveEvent) {
+    fun onMemberLeave(event: GuildMemberRemoveEvent) {
         val config = configuration.getGuildConfig(event.guild.id)
                 ?: return
 
-        if (config.trackMembers)
-            logger.buildMemberLeaveEmbed(event)
+        if (event.guild.retrieveBanList().complete().any { it.user.id == event.user.id }) {
+            if (config.trackBans)
+                logger.buildMemberBanEmbed(event)
+        } else {
+            if (config.trackMembers)
+                logger.buildMemberLeaveEmbed(event)
+        }
+
     }
 }

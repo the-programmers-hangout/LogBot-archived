@@ -11,15 +11,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
 class BanListener(private val configuration: Configuration, private val logger: LoggingService) {
 
     @Subscribe
-    fun onMemberBanned(event: GuildBanEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackBans)
-            logger.buildMemberBanEmbed(event)
-    }
-
-    @Subscribe
     fun onMemberUnbanned(event: GuildUnbanEvent) {
         val config = configuration.getGuildConfig(event.guild.id)
                 ?: return
