@@ -2,6 +2,7 @@ package me.moe.logbot.commands
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
@@ -9,10 +10,12 @@ import me.aberrantfox.kjdautils.internal.services.ConversationService
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.moe.logbot.conversations.GuildSetupConversation
 import me.moe.logbot.data.Configuration
+import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.extensions.requiredPermissionLevel
 import me.moe.logbot.locale.messages
 import me.moe.logbot.services.CacheService
 import me.moe.logbot.services.Permission
+import me.moe.logbot.util.embeds.GuildSetupCommandsEmbedUtils.Companion.buildGuildConfigEmbed
 import me.moe.logbot.util.embeds.GuildSetupCommandsEmbedUtils.Companion.buildGuildSetupEmbed
 import me.moe.logbot.util.embeds.UtilEmbeds.Companion.buildErrorEmbed
 import me.moe.logbot.util.embeds.UtilEmbeds.Companion.buildGuildNotSetupEmbed
@@ -43,7 +46,31 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
     }
 
     command("ViewConfiguration") {
+        requiredPermissionLevel = Permission.Staff
 
+        execute {
+            val config = configuration.getGuildConfig(it.guild!!.id)
+                    ?: return@execute it.respond(buildGuildNotSetupEmbed())
+
+            val guild = it.discord.jda.getGuildById(config.guildId)?.descriptor() ?: "The guildID is either not set or is invalid"
+
+            val adminRole = it.guild!!.getRoleByName(config.adminRole)?.descriptor()
+                    ?: "The admin role is either not set or is invalid"
+
+            val staffRole = it.guild!!.getRoleByName(config.staffRole)?.descriptor()
+                    ?: "The staff role is either not set or is invalid"
+
+            val loggingChannel = it.guild!!.getTextChannelById(config.loggingChannel)?.descriptor()
+                    ?: "The logging channel is either not set or is invalid."
+
+            val historyChannel = it.guild!!.getTextChannelById(config.historyChannel)?.descriptor()
+                    ?: "The history channel is either not set or is invalid."
+
+            val cacheAmt = config.messageCacheAmount.toString()
+
+            it.respond(buildGuildConfigEmbed(guild, adminRole, staffRole, loggingChannel, historyChannel, cacheAmt))
+
+        }
     }
 
     command("AdminRole") {

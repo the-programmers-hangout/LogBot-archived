@@ -31,8 +31,7 @@ fun roleConfigCommands(configuration: Configuration,
                     ?: return@execute it.respond(messages.errors.GUILD_NOT_SETUP)
 
             val test = config.ignoreRoleNames.map {ignoredRole ->
-                val role = it.guild!!.getRoleByName(ignoredRole)
-                role?.descriptor() ?: "$ignoredRole (invalid role)"
+                it.guild!!.getRoleByName(ignoredRole)?.descriptor() ?: "$ignoredRole (invalid role)"
             }
 
             it.respond(buildIgnoredRolesEmbed(test))
