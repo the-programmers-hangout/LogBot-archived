@@ -4,20 +4,20 @@ import com.google.common.eventbus.Subscribe
 import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.moe.logbot.data.Configuration
 import me.moe.logbot.data.GuildConfiguration
+import me.moe.logbot.services.CacheService
 import me.moe.logbot.services.LoggingService
 import me.moe.logbot.util.types.LimitedList
-import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
 
-class MessageListener(val configuration: Configuration, private val logger: LoggingService) {
+class MessageListener(val configuration: Configuration, private val logger: LoggingService,
+                      val cacheService: CacheService) {
 
-    private val messageCaches: Map<String, LimitedList<Message>> = configuration.guildConfigurations
-            .associateBy({ it.guildId }, { LimitedList<Message>(it.messageCacheAmount) })
+//    private val messageCaches: Map<String, LimitedList<Message>> = configuration.guildConfigurations
+//            .associateBy({ it.guildId }, { LimitedList<Message>(it.messageCacheAmount) })
 
     @Subscribe
     fun onGuildMessageRecieved(event: GuildMessageReceivedEvent) {
@@ -31,7 +31,7 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
         if (shouldBeLogged(event.author.toMember(event.guild)!!, config)) return
 
         if (config.trackMessages) {
-            messageCaches[event.guild.id]?.add(event.message)
+            cacheService.addMessageToCache(event.guild, event.message)
         }
     }
 
@@ -45,19 +45,17 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
 
         if (shouldBeLogged(event.author.toMember(event.guild)!!, config)) return
 
-        val messageCache: LimitedList<Message> = messageCaches[event.guild.id] ?: return
-        val cachedMessage = messageCaches[event.guild.id]?.find { it.id == event.messageId } ?: return
+        val cachedMessage = cacheService.getMessageFromCache(event.guild, event.messageId) ?: return
 
         logger.buildMessageEditedEmbed(event, cachedMessage)
 
-        messageCache.remove(cachedMessage)
-        messageCache.add(event.message)
+        cacheService.removeMessageFromCache(event.guild, cachedMessage)
+        cacheService.addMessageToCache(event.guild, event.message)
     }
 
     @Subscribe
     fun onGuildMessageDelete(event: GuildMessageDeleteEvent) {
-        val messageCache: LimitedList<Message> = messageCaches[event.guild.id] ?: return
-        val cachedMessage = messageCache.find { it.id == event.messageId } ?: return
+        val cachedMessage = cacheService.getMessageFromCache(event.guild, event.messageId) ?: return
 
         val author = cachedMessage.author
         if (author.isBot) return
