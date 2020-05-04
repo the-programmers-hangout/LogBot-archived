@@ -15,6 +15,9 @@ import net.dv8tion.jda.api.events.guild.GuildBanEvent
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent
 import net.dv8tion.jda.api.events.guild.member.*
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
@@ -288,7 +291,6 @@ class LoggingService(private val config: Configuration) {
     }
 
     fun buildReactionRemovedEvent(event: GuildMessageReactionRemoveEvent) = withLog(event.guild) {
-        event.reactionEmote.isEmoji
         embed {
             title = "Reaction removed"
             color = failureColor
@@ -307,6 +309,69 @@ class LoggingService(private val config: Configuration) {
                 value = event.reactionEmote.name
             }
 
+        }
+    }
+
+
+    /*
+
+        Voice
+
+     */
+
+    fun buildVoiceJoinEmbed (event: GuildVoiceJoinEvent) = withLog(event.guild) {
+        embed {
+            title = "Voice join"
+            color = successColor
+
+            field {
+                name = "User"
+                value = event.member.user.verboseDescriptor()
+            }
+
+            field {
+                name = "Voice channel"
+                value = event.channelJoined.descriptor()
+            }
+        }
+    }
+
+    fun buildVoiceLeaveEmbed (event: GuildVoiceLeaveEvent) = withLog(event.guild) {
+        embed {
+            title = "Voice leave"
+            color = failureColor
+
+            field {
+                name = "User"
+                value = event.member.user.verboseDescriptor()
+            }
+
+            field {
+                name = "Voice channel"
+                value = event.channelLeft.descriptor()
+            }
+        }
+    }
+
+    fun buildVoiceMoveEmbed (event: GuildVoiceMoveEvent) = withLog(event.guild) {
+        embed {
+            title = "Voice move"
+            color = infoColor
+
+            field {
+                name = "User"
+                value = event.member.user.verboseDescriptor()
+            }
+
+            field {
+                name = "Old channel"
+                value = event.channelLeft.descriptor()
+            }
+
+            field {
+                name = "New channel"
+                value = event.channelJoined.descriptor()
+            }
         }
     }
 
