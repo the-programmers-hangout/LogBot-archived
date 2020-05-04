@@ -13,14 +13,13 @@ import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
 import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
 import net.dv8tion.jda.api.events.guild.GuildBanEvent
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
+import net.dv8tion.jda.api.events.guild.member.*
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent
 import java.awt.Color
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -49,7 +48,7 @@ class LoggingService(private val config: Configuration) {
         embed {
             title = "Emote Added"
             description = "The emote `${event.emote.name}` has been added"
-            color = Color.RED
+            color = successColor
             image = event.emote.imageUrl
         }
     }
@@ -58,7 +57,7 @@ class LoggingService(private val config: Configuration) {
         embed {
             title = "Emote Removed"
             description = "The emote `${event.emote.name}` has been removed"
-            color = Color.RED
+            color = failureColor
             image = event.emote.imageUrl
         }
     }
@@ -67,7 +66,7 @@ class LoggingService(private val config: Configuration) {
         embed {
             title = "Emote Renamed"
             description = "The emote `${event.oldName}` has been renamed to `${event.newName}`"
-            color = Color.WHITE
+            color = infoColor
             image = event.emote.imageUrl
         }
     }
@@ -81,7 +80,7 @@ class LoggingService(private val config: Configuration) {
     fun buildMemberJoinEmbed(event: GuildMemberJoinEvent) = withLog(event.guild) {
         embed {
             title = "User Joined"
-            color = Color.GREEN
+            color = successColor
 
             field {
                 name = "User"
@@ -94,10 +93,10 @@ class LoggingService(private val config: Configuration) {
         }
     }
 
-    fun buildMemberLeaveEmbed(event: GuildMemberLeaveEvent) = withLog(event.guild) {
+    fun buildMemberLeaveEmbed(event: GuildMemberRemoveEvent) = withLog(event.guild) {
         embed {
             title = "User Left"
-            color = Color.RED
+            color = failureColor
 
             field {
                 name = "User"
@@ -112,10 +111,10 @@ class LoggingService(private val config: Configuration) {
 
      */
 
-    fun buildMemberBanEmbed(event: GuildBanEvent) = withLog(event.guild) {
+    fun buildMemberBanEmbed(event: GuildMemberRemoveEvent) = withLog(event.guild) {
         embed {
             title = "User Banned"
-            color = Color.RED
+            color = failureColor
 
             field {
                 name = "User"
@@ -127,7 +126,7 @@ class LoggingService(private val config: Configuration) {
     fun buildMemberUnbanEmbed(event: GuildUnbanEvent) = withLog(event.guild) {
         embed {
             title = "User Unbanned"
-            color = Color.GREEN
+            color = successColor
 
             field {
                 name = "User"
@@ -147,7 +146,7 @@ class LoggingService(private val config: Configuration) {
 
         embed {
             title = "$roleOrRoles Added To User"
-            color = Color.GREEN
+            color = successColor
 
             field {
                 name = "User"
@@ -166,7 +165,7 @@ class LoggingService(private val config: Configuration) {
 
         embed {
             title = "$roleOrRoles Removed From User"
-            color = Color.RED
+            color = failureColor
 
             field {
                 name = "User"
@@ -219,7 +218,7 @@ class LoggingService(private val config: Configuration) {
     fun buildMessageDeletedEmbed(event: GuildMessageDeleteEvent, deletedMessage: Message) = withHistory(event.guild) {
         embed {
             title = "Message Deleted"
-            color = Color.RED
+            color = failureColor
 
             field {
                 name = "User"
@@ -260,6 +259,54 @@ class LoggingService(private val config: Configuration) {
 
             createContinuableField("Old", oldMessage.contentRaw)
             createContinuableField("New", event.message.contentRaw)
+        }
+    }
+
+    /*
+
+        Reactions
+
+     */
+    fun buildReactionAddedEvent(event: GuildMessageReactionAddEvent) = withLog(event.guild) {
+        event.reactionEmote.isEmoji
+        embed {
+            title = "Reaction added"
+            color = successColor
+            thumbnail = if(event.reactionEmote.isEmoji) null else event.reactionEmote.emote.imageUrl
+
+            field {
+                name = "User"
+                value = event.member.user.verboseDescriptor()
+            }
+
+            field {
+                name = "Emote"
+                value = event.reactionEmote.name
+            }
+
+        }
+    }
+
+    fun buildReactionRemovedEvent(event: GuildMessageReactionRemoveEvent) = withLog(event.guild) {
+        event.reactionEmote.isEmoji
+        embed {
+            title = "Reaction removed"
+            color = failureColor
+            thumbnail = if(event.reactionEmote.isEmoji) null else event.reactionEmote.emote.imageUrl
+
+            if (event.member != null) {
+                field {
+                    name = "User"
+                    value = event.member!!.user.verboseDescriptor()
+                }
+            }
+
+
+            field {
+                name = "Emote"
+                value = event.reactionEmote.name
+            }
+
         }
     }
 
