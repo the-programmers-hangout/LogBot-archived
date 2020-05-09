@@ -4,10 +4,14 @@ import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.descriptor
 import me.moe.logbot.data.Configuration
-import me.moe.logbot.extensions.createContinuableField
-import me.moe.logbot.extensions.descriptor
-import me.moe.logbot.extensions.verboseDescriptor
+import me.moe.logbot.extensions.*
 import net.dv8tion.jda.api.entities.*
+import net.dv8tion.jda.api.events.GatewayPingEvent
+import net.dv8tion.jda.api.events.channel.text.TextChannelCreateEvent
+import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent
+import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateNameEvent
+import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateSlowmodeEvent
+import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateTopicEvent
 import net.dv8tion.jda.api.events.emote.EmoteAddedEvent
 import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
 import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
@@ -247,7 +251,7 @@ class LoggingService(private val config: Configuration) {
     fun buildMessageEditedEmbed(event: GuildMessageUpdateEvent, oldMessage: Message) = withHistory(event.guild) {
         embed {
             title = "Message Edited"
-            description = event.message.jumpUrl
+            description = "[Jump to message](${event.message.jumpUrl})"
             color = Color.ORANGE
 
             field {
@@ -271,9 +275,12 @@ class LoggingService(private val config: Configuration) {
 
      */
     fun buildReactionAddedEvent(event: GuildMessageReactionAddEvent) = withLog(event.guild) {
-        event.reactionEmote.isEmoji
+
+        val message = event.channel.retrieveMessageById(event.messageId).complete()
         embed {
             title = "Reaction added"
+            if (message != null)
+                description = "[Jump to](${message.jumpUrl})"
             color = successColor
             thumbnail = if(event.reactionEmote.isEmoji) null else event.reactionEmote.emote.imageUrl
 
@@ -291,8 +298,12 @@ class LoggingService(private val config: Configuration) {
     }
 
     fun buildReactionRemovedEvent(event: GuildMessageReactionRemoveEvent) = withLog(event.guild) {
+
+        val message = event.channel.retrieveMessageById(event.messageId).complete()
         embed {
             title = "Reaction removed"
+            if (message != null)
+                description = "[Jump to message](${message.jumpUrl})"
             color = failureColor
             thumbnail = if(event.reactionEmote.isEmoji) null else event.reactionEmote.emote.imageUrl
 
@@ -374,6 +385,97 @@ class LoggingService(private val config: Configuration) {
             }
         }
     }
+
+
+    /*
+
+        Channels
+
+     */
+
+    fun buildSlowmodeUpdateEmbed(event: TextChannelUpdateSlowmodeEvent) = withLog(event.guild) {
+        embed {
+            title = "Slowmode Updated"
+            color = infoColor
+
+            field {
+                name = "Channel"
+                value = event.channel.descriptor()
+            }
+            field {
+                name = "Old slowmode"
+                value = event.oldSlowmode.toTimeStringFromSec()
+            }
+
+            field {
+                name = "New slowmode"
+                value = event.newSlowmode.toTimeStringFromSec()
+            }
+
+        }
+    }
+
+    fun buildChannelCreateEmbed(event: TextChannelCreateEvent) = withLog(event.guild) {
+        embed {
+            title = "Channel created"
+            color = successColor
+
+            field {
+                name = "Channel"
+                value = event.channel.descriptor()
+            }
+        }
+    }
+
+    fun buildChannelDeleteEmbed(event: TextChannelDeleteEvent) = withLog(event.guild) {
+        embed {
+            title = "Channel deleted"
+            color = failureColor
+
+            field {
+                name = "Channel"
+                value = event.channel.descriptor()
+            }
+        }
+    }
+
+    fun buildChannelUpdateNameEmbed(event: TextChannelUpdateNameEvent) = withLog(event.guild) {
+        embed {
+            title = "Update channel name"
+            color = infoColor
+
+            field {
+                name = "Channel"
+                value = event.channel.descriptor()
+            }
+
+            field {
+                name = "Old name"
+                value = event.oldName
+            }
+
+            field {
+                name = "New name"
+                value = event.newName
+            }
+        }
+    }
+
+    fun buildChannelUpdateTopicEmbed(event: TextChannelUpdateTopicEvent) = withLog(event.guild) {
+        embed {
+            title = "Channel topic updated"
+            color = infoColor
+
+            if (event.oldTopic != null)
+                createContinuableField("Old topic", event.oldTopic!!)
+
+            if (event.newTopic != null)
+                createContinuableField("New topic", event.newTopic!!)
+        }
+    }
+
+
+
 
     private fun getLogConfig(guildId: String) = config.getGuildConfig(guildId)!!.loggingChannel
     private fun getHistoryConfig(guildId: String) = config.getGuildConfig(guildId)!!.historyChannel
