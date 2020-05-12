@@ -47,6 +47,8 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
 
         val cachedMessage = cacheService.getMessageFromCache(event.guild, event.messageId) ?: return
 
+        if (cachedMessage.contentRaw == event.message.contentRaw) return
+
         logger.buildMessageEditedEmbed(event, cachedMessage)
 
         cacheService.removeMessageFromCache(event.guild, cachedMessage)

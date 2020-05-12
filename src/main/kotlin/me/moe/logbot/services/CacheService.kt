@@ -28,6 +28,6 @@ class CacheService(private val configuration: Configuration) {
     }
 
     fun removeMessageFromCache(guild: Guild, message: Message) {
-
+        messageCaches[guild.id]?.remove(message)
     }
 }
