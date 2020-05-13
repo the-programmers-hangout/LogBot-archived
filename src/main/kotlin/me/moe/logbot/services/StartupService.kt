@@ -14,11 +14,12 @@ data class Properties(val author: String, val version: String, val kutils: Strin
 private val propFile = Properties::class.java.getResource("/properties.json").readText()
 val project: Properties = Gson().fromJson(propFile, Properties::class.java)
 
-private val startTime = Date()
-
 @Service
 class StartupService(configuration: Configuration,
                      discord: Discord) {
+
+    private val startTime = Date()
+
     init {
         with(discord.configuration) {
             colors {
