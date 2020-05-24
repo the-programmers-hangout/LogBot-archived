@@ -28,12 +28,13 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(buildGuildNotSetupEmbed())
 
-            val guild = it.discord.jda.getGuildById(config.guildId)?.descriptor() ?: "The guildID is either not set or is invalid"
+            val guild = it.discord.jda.getGuildById(config.guildId)?.descriptor()
+                    ?: "The guildID is either not set or is invalid"
 
-            val adminRole = it.guild!!.getRoleByName(config.adminRole)?.descriptor()
+            val adminRole = it.guild!!.getRoleById(config.adminRole)?.descriptor()
                     ?: "The admin role is either not set or is invalid"
 
-            val staffRole = it.guild!!.getRoleByName(config.staffRole)?.descriptor()
+            val staffRole = it.guild!!.getRoleById(config.staffRole)?.descriptor()
                     ?: "The staff role is either not set or is invalid"
 
             val loggingChannel = it.guild!!.getTextChannelById(config.loggingChannel)?.descriptor()
