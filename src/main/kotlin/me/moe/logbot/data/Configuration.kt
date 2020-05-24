@@ -18,8 +18,7 @@ data class GuildConfiguration(var guildId: String = "insert_id",
                               var trackReactions: Boolean = true,
                               var trackVoice: Boolean = true,
                               var trackChannels: Boolean = true,
-                              var trackCategories: Boolean = true,
-                              var trackInvites: Boolean = true
+                              var trackCategories: Boolean = true
 )
 
 @Data("config/config.json")
@@ -42,7 +41,6 @@ data class Configuration(val prefix: String = "++",
     fun isTrackingVoice(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackVoice)
     fun isTrackingChannels(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackChannels)
     fun isTrackingCategories(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackCategories)
-    fun isTrackingInvites(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackInvites)
 
 
 
