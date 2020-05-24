@@ -30,6 +30,10 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent
+import net.dv8tion.jda.api.events.role.RoleCreateEvent
+import net.dv8tion.jda.api.events.role.RoleDeleteEvent
+import net.dv8tion.jda.api.events.role.update.RoleUpdateColorEvent
+import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent
 import java.awt.Color
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -186,6 +190,76 @@ class LoggingService(private val config: Configuration) {
                 name = roleOrRoles
                 value = event.roles.joinToString(separator = "\n") { it.descriptor() }
             }
+        }
+    }
+
+    fun buildRoleCreateEmbed(event: RoleCreateEvent) = withLog(event.guild) {
+        embed {
+            title = "Role Created"
+            color = successColor
+
+            field {
+                name = "Role"
+                value = event.role.descriptor()
+            }
+        }
+    }
+
+    fun buildRoleDeleteEmbed(event: RoleDeleteEvent) = withLog(event.guild) {
+        embed {
+            title = "Role Deleted"
+            color = failureColor
+
+            field {
+                name = "Role"
+                value = event.role.descriptor()
+            }
+        }
+    }
+
+    fun buildRoleUpdateNameEmbed(event: RoleUpdateNameEvent) = withLog(event.guild) {
+        embed {
+            title = "Role Updated"
+            color = infoColor
+
+            field {
+                name = "Role"
+                value = event.role.descriptor()
+            }
+
+            field {
+                name = "Old name"
+                value = event.oldName
+            }
+        }
+    }
+
+    fun buildRoleUpdateColourEmbed(event: RoleUpdateColorEvent) = withLog(event.guild) {
+        embed {
+            title = "Role Colour Updated"
+            color = infoColor
+
+            field {
+                name = "Role"
+                value = event.role.descriptor()
+            }
+
+            if (event.oldColor != null) {
+                field {
+                    name = "Old colour"
+                    value = event.oldColor!!.descriptor()
+                }
+            }
+
+
+            if (event.newColor != null) {
+                field {
+                    name = "New colour"
+                    value = event.newColor!!.descriptor()
+                }
+            }
+
+
         }
     }
 
