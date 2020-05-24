@@ -4,7 +4,7 @@
   </a>
   
   <a href="https://gitlab.com/Aberrantfox/KUtils">
-    <img src="https://img.shields.io/badge/KUtils-0.15.1-blue.svg?logo=" alt="KUtils 0.15.1" />
+    <img src="https://img.shields.io/badge/KUtils-0.15.1-blue.svg?logo=" alt="KUtils 0.16.0" />
   </a>
   
   <a href="LICENSE.md">
