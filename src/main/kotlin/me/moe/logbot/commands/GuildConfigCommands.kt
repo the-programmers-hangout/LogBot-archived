@@ -6,44 +6,20 @@ import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
-import me.aberrantfox.kjdautils.internal.services.ConversationService
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.moe.logbot.conversations.GuildSetupConversation
 import me.moe.logbot.data.Configuration
 import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.extensions.requiredPermissionLevel
-import me.moe.logbot.locale.messages
 import me.moe.logbot.services.CacheService
 import me.moe.logbot.services.Permission
 import me.moe.logbot.util.embeds.GuildSetupCommandsEmbedUtils.Companion.buildGuildConfigEmbed
-import me.moe.logbot.util.embeds.GuildSetupCommandsEmbedUtils.Companion.buildGuildSetupEmbed
 import me.moe.logbot.util.embeds.UtilEmbeds.Companion.buildErrorEmbed
 import me.moe.logbot.util.embeds.UtilEmbeds.Companion.buildGuildNotSetupEmbed
 import me.moe.logbot.util.embeds.UtilEmbeds.Companion.buildSuccessEmbed
 
 @CommandSet("Guild Config")
 fun guildConfigCommands(configuration: Configuration, persistenceService: PersistenceService,
-                        conversationService: ConversationService, cacheService: CacheService) = commands {
-    command("Setup") {
-        requiredPermissionLevel = Permission.GuildOwner
-
-        execute {commandEvent ->
-
-            if (configuration.hasGuildConfig(commandEvent.guild!!.id)) {
-                commandEvent.respond(buildErrorEmbed(messages.errors.GUILD_ALREADY_SETUP))
-
-                return@execute
-            }
-
-            commandEvent.author.openPrivateChannel().queue {
-                it.sendMessage(buildGuildSetupEmbed(commandEvent.guild!!)).queue({
-                    conversationService.startConversation<GuildSetupConversation>(commandEvent.author, commandEvent.guild!!)
-                }, {
-                    commandEvent.respond(buildErrorEmbed(messages.errors.DMS_CLOSED))
-                })
-            }
-        }
-    }
+                        cacheService: CacheService) = commands {
 
     command("ViewConfiguration") {
         requiredPermissionLevel = Permission.Staff
