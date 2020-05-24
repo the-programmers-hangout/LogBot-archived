@@ -42,7 +42,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
             val historyChannel = it.guild!!.getTextChannelById(config.historyChannel)?.descriptor()
                     ?: "The history channel is either not set or is invalid."
 
-            val cacheAmt = config.messageCacheAmount.toString()
+            val cacheAmt = configuration.cacheAmount
 
             it.respond(buildGuildConfigEmbed(guild, adminRole, staffRole, loggingChannel, historyChannel, cacheAmt))
 
@@ -108,31 +108,6 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
             persistenceService.save(configuration)
 
             it.respond(buildSuccessEmbed("History channel set to ${channel.name}"))
-        }
-    }
-
-    command("MessageCacheAmount") {
-        requiredPermissionLevel = Permission.Administrator
-
-        execute(IntegerArg) {
-            val cacheAmt = it.args.first
-
-            val config = configuration.getGuildConfig(it.guild!!.id)
-                    ?: return@execute it.respond(buildGuildNotSetupEmbed())
-
-            if (cacheAmt <= 0 || cacheAmt > configuration.maxCacheAmount) {
-                it.respond(buildErrorEmbed("You can only cache between 1 " +
-                        "and ${configuration.maxCacheAmount} message(s)"))
-
-                return@execute
-            }
-
-            cacheService.setCacheLimit(it.guild!!, cacheAmt)
-
-            config.messageCacheAmount = cacheAmt
-            persistenceService.save(configuration)
-
-            it.respond(buildSuccessEmbed("Now caching $cacheAmt message(s)"))
         }
     }
 }

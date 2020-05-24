@@ -1,33 +1,27 @@
 package me.moe.logbot.services
 
+import com.google.common.collect.EvictingQueue
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.moe.logbot.data.Configuration
-import me.moe.logbot.util.types.LimitedList
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Message
 
 @Service
 class CacheService(private val configuration: Configuration) {
-    private val messageCaches: Map<String, LimitedList<Message>> = configuration.guildConfigurations
-            .associateBy({ it.guildId }, { LimitedList<Message>(it.messageCacheAmount) })
-
-    fun setCacheLimit(guild: Guild, newLimit: Int) {
-        messageCaches[guild.id]?.changeLimit(newLimit)
-    }
-
-    fun getMessageCache(guild: Guild): LimitedList<Message>? {
-        return messageCaches[guild.id]
-    }
-
-    fun getMessageFromCache(guild: Guild, messageID: String): Message? {
-        return messageCaches[guild.id]?.find { it.id == messageID }
-    }
+    private val messageCaches: MutableMap<Long, EvictingQueue<Pair<Long, Message>>> = mutableMapOf()
 
     fun addMessageToCache(guild: Guild, message: Message) {
-        messageCaches[guild.id]?.add(message)
+        if (!messageCaches.containsKey(guild.idLong))
+            messageCaches[guild.idLong] = EvictingQueue.create(configuration.cacheAmount)
+
+        messageCaches[guild.idLong]!!.add(message.idLong to message)
+    }
+
+    fun getMessageFromCache(guild: Guild, messageId: Long): Message? {
+        return messageCaches[guild.idLong]?.find { it.first == messageId }?.second
     }
 
     fun removeMessageFromCache(guild: Guild, message: Message) {
-        messageCaches[guild.id]?.remove(message)
+        messageCaches[guild.idLong]?.remove(message.idLong to message)
     }
 }

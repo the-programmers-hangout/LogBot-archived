@@ -19,7 +19,7 @@ class GuildSetupCommandsEmbedUtils {
         }
 
         fun buildGuildConfigEmbed(guild: String, adminRole: String, staffRole: String, loggingChannel: String,
-                                  historyChannel: String, cacheAmt: String): MessageEmbed {
+                                  historyChannel: String, cacheAmt: Int): MessageEmbed {
             return embed {
                 title = "Guild Config"
                 color = infoColor
@@ -51,7 +51,7 @@ class GuildSetupCommandsEmbedUtils {
 
                 field {
                     name = "Message Cache Amount"
-                    value = cacheAmt
+                    value = cacheAmt.toString()
                 }
 
             }
