@@ -32,7 +32,7 @@ class StartupService(configuration: Configuration,
 
 
                 with(project) {
-                    val self = it.guild.jda.selfUser
+                    val self = discord.jda.selfUser
                     val kotlinVersion = KotlinVersion.CURRENT
                     val milliseconds = Date().time - startTime.time
                     val seconds = (milliseconds / 1000) % 60
@@ -64,6 +64,17 @@ class StartupService(configuration: Configuration,
 
                 }
 
+            }
+
+            prefix {
+                configuration.prefix
+            }
+
+            requiresGuild = true
+            allowMentionPrefix = true
+
+            visibilityPredicate {
+                return@visibilityPredicate !it.command.names.contains("Help")
             }
         }
     }

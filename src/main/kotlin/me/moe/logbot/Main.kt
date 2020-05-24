@@ -7,14 +7,5 @@ import me.moe.logbot.data.Configuration
 fun main(args: Array<String>) {
     val token = args.firstOrNull() ?: return println("No program arguments provided. Expected bot token.")
 
-    startBot(token) {
-        configure {
-            val configuration: Configuration = discord.getInjectionObject<Configuration>()!!
-
-            prefix = configuration.prefix
-
-            allowPrivateMessages = false
-            allowMentionPrefix = true
-        }
-    }
+    startBot(token) { }
 }

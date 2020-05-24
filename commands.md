@@ -6,13 +6,13 @@
 | (Argument) | This argument is optional. |
 
 ## Guild Config
-| Commands          | Arguments   | Description             |
-| ----------------- | ----------- | ----------------------- |
-| AdminRole         | Role        | No Description Provider |
-| HistoryChannel    | TextChannel | No Description Provider |
-| LoggingChannel    | TextChannel | No Description Provider |
-| StaffRole         | Role        | No Description Provider |
-| ViewConfiguration | <none>      | No Description Provider |
+| Commands          | Arguments   | Description      |
+| ----------------- | ----------- | ---------------- |
+| AdminRole         | Role        | <No Description> |
+| HistoryChannel    | TextChannel | <No Description> |
+| LoggingChannel    | TextChannel | <No Description> |
+| StaffRole         | Role        | <No Description> |
+| ViewConfiguration | <none>      | <No Description> |
 
 ## Listeners
 | Commands        | Arguments                                                                                                              | Description                                                                     |

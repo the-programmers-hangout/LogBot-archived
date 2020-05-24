@@ -10,6 +10,7 @@ import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.moe.logbot.data.Configuration
 import me.moe.logbot.extensions.descriptor
 import me.moe.logbot.extensions.requiredPermissionLevel
+import me.moe.logbot.locale.messages
 import me.moe.logbot.services.CacheService
 import me.moe.logbot.services.Permission
 import me.moe.logbot.util.embeds.GuildSetupCommandsEmbedUtils.Companion.buildGuildConfigEmbed
@@ -23,6 +24,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
 
     command("ViewConfiguration") {
         requiredPermissionLevel = Permission.Staff
+        description = messages.descriptions.VIEW_CONFIGURATION
 
         execute {
             val config = configuration.getGuildConfig(it.guild!!.id)
@@ -52,6 +54,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
 
     command("AdminRole") {
         requiredPermissionLevel = Permission.GuildOwner
+        description = messages.descriptions.ADMIN_ROLE
 
         execute(RoleArg) {
             val newAdmin = it.args.first
@@ -59,7 +62,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(buildGuildNotSetupEmbed())
 
-            config.adminRole = newAdmin.name
+            config.adminRole = newAdmin.id
             persistenceService.save(configuration)
 
             it.respond(buildSuccessEmbed("Admin role set to ${newAdmin.name}"))
@@ -68,6 +71,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
 
     command("StaffRole") {
         requiredPermissionLevel = Permission.GuildOwner
+        description = messages.descriptions.STAFF_ROLE
 
         execute(RoleArg) {
             val newStaff = it.args.first
@@ -75,7 +79,7 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
             val config = configuration.getGuildConfig(it.guild!!.id)
                     ?: return@execute it.respond(buildGuildNotSetupEmbed())
 
-            config.staffRole = newStaff.name
+            config.staffRole = newStaff.id
             persistenceService.save(configuration)
 
             it.respond(buildSuccessEmbed("Staff role set to ${newStaff.name}"))
@@ -84,6 +88,8 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
 
     command("LoggingChannel") {
         requiredPermissionLevel = Permission.Administrator
+        description = messages.descriptions.LOGGING_CHANNEL
+
         execute(TextChannelArg) {
             val channel = it.args.first
 
@@ -99,6 +105,8 @@ fun guildConfigCommands(configuration: Configuration, persistenceService: Persis
 
     command("HistoryChannel") {
         requiredPermissionLevel = Permission.Administrator
+        description = messages.descriptions.HISTORY_CHANNEL
+
         execute(TextChannelArg) {
             val channel = it.args.first
 

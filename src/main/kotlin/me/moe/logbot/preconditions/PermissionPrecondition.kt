@@ -12,7 +12,7 @@ import me.moe.logbot.services.PermissionsService
 
 @Precondition
 fun produceHasPermissionPrecondition(permissionsService: PermissionsService) = precondition {
-    val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    val command = it.container[it.rawInputs.commandName] ?: return@precondition Fail()
     val requiredPermissionLevel = command.requiredPermissionLevel
     val guild = it.guild!!
     val member = it.author.toMember(guild)!!
