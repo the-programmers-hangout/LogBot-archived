@@ -11,19 +11,13 @@ class ReactionListener(private val configuration: Configuration, private val log
     @Subscribe
     fun onReactionAdd(event: GuildMessageReactionAddEvent) {
         if (event.member.user.isBot) return
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackReactions)
+        if (configuration.isTrackingReactions(event.guild.id))
             logger.buildReactionAddedEvent(event)
     }
 
     @Subscribe
     fun onReactionRemove(event: GuildMessageReactionRemoveEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackReactions)
+        if (configuration.isTrackingReactions(event.guild.id))
             logger.buildReactionRemovedEvent(event)
     }
 }

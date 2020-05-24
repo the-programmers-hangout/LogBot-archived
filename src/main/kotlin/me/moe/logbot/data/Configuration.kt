@@ -18,7 +18,8 @@ data class GuildConfiguration(var guildId: String = "insert_id",
                               var trackReactions: Boolean = true,
                               var trackVoice: Boolean = true,
                               var trackChannels: Boolean = true,
-                              var trackCategories: Boolean = true
+                              var trackCategories: Boolean = true,
+                              var trackInvites: Boolean = true
 )
 
 @Data("config/config.json")
@@ -30,4 +31,26 @@ data class Configuration(val prefix: String = "++",
 
     fun hasGuildConfig(guildId: String) = getGuildConfig(guildId) != null
     fun getGuildConfig(guildId: String) = guildConfigurations.firstOrNull { it.guildId == guildId }
+
+    fun isTrackingEmotes(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackEmotes)
+    fun isTrackingMembers(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackMembers)
+    fun isTrackingBans(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackBans)
+    fun isTrackingRoles(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackRoles)
+    fun isTrackingNicknames(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackNicknames)
+    fun isTrackingMessages(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackMessages)
+    fun isTrackingReactions(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackReactions)
+    fun isTrackingVoice(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackVoice)
+    fun isTrackingChannels(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackChannels)
+    fun isTrackingCategories(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackCategories)
+    fun isTrackingInvites(guildId: String) = booleanSafety(getGuildConfig(guildId)?.trackInvites)
+
+
+
+    private fun booleanSafety(bool: Boolean?): Boolean {
+        return when (bool) {
+            true -> true
+            false -> false
+            else -> false
+        }
+    }
 }

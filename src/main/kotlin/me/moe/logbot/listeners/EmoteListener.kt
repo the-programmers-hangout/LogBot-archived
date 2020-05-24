@@ -11,28 +11,19 @@ class EmoteListener(private val configuration: Configuration, private val logger
 
     @Subscribe
     fun onEmoteAdded(event: EmoteAddedEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackEmotes)
+        if (configuration.isTrackingEmotes(event.guild.id))
             logger.buildEmoteAddedEmbed(event)
     }
 
     @Subscribe
     fun onEmoteRemoved(event: EmoteRemovedEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackEmotes)
+        if (configuration.isTrackingEmotes(event.guild.id))
             logger.buildEmoteDeletedEmbed(event)
     }
 
     @Subscribe
     fun onEmoteChanged(event: EmoteUpdateNameEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackEmotes)
+        if (configuration.isTrackingEmotes(event.guild.id))
             logger.buildEmoteRenameEmbed(event)
     }
 }

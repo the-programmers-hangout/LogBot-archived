@@ -16,9 +16,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
 class MessageListener(val configuration: Configuration, private val logger: LoggingService,
                       val cacheService: CacheService) {
 
-//    private val messageCaches: Map<String, LimitedList<Message>> = configuration.guildConfigurations
-//            .associateBy({ it.guildId }, { LimitedList<Message>(it.messageCacheAmount) })
-
     @Subscribe
     fun onGuildMessageRecieved(event: GuildMessageReceivedEvent) {
         if (event.author.isBot) return
@@ -30,7 +27,7 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
 
         if (shouldBeLogged(event.author.toMember(event.guild)!!, config)) return
 
-        if (config.trackMessages) {
+        if (configuration.isTrackingMessages(event.guild.id)) {
             cacheService.addMessageToCache(event.guild, event.message)
         }
     }
@@ -49,7 +46,9 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
 
         if (cachedMessage.contentRaw == event.message.contentRaw) return
 
-        logger.buildMessageEditedEmbed(event, cachedMessage)
+        if (configuration.isTrackingMessages(event.guild.id)) {
+            logger.buildMessageEditedEmbed(event, cachedMessage)
+        }
 
         cacheService.removeMessageFromCache(event.guild, cachedMessage)
         cacheService.addMessageToCache(event.guild, event.message)
@@ -68,7 +67,9 @@ class MessageListener(val configuration: Configuration, private val logger: Logg
 
         if (shouldBeLogged(author.toMember(event.guild)!!, config)) return
 
-        logger.buildMessageDeletedEmbed(event, cachedMessage)
+        if (configuration.isTrackingMessages(event.guild.id)) {
+            logger.buildMessageDeletedEmbed(event, cachedMessage)
+        }
     }
 
 

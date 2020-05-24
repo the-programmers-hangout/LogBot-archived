@@ -11,28 +11,19 @@ class VoiceListener(private val configuration: Configuration, private val logger
 
     @Subscribe
     fun onVoiceJoin(event: GuildVoiceJoinEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackVoice)
+        if (configuration.isTrackingVoice(event.guild.id))
             logger.buildVoiceJoinEmbed(event)
     }
 
     @Subscribe
     fun onVoiceLeave(event: GuildVoiceLeaveEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackVoice)
+        if (configuration.isTrackingVoice(event.guild.id))
             logger.buildVoiceLeaveEmbed(event)
     }
 
     @Subscribe
     fun onVoiceMove(event: GuildVoiceMoveEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackVoice)
+        if (configuration.isTrackingVoice(event.guild.id))
             logger.buildVoiceMoveEmbed(event)
     }
 }

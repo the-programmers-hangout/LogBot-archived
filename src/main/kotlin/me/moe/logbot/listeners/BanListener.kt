@@ -12,10 +12,7 @@ class BanListener(private val configuration: Configuration, private val logger: 
 
     @Subscribe
     fun onMemberUnbanned(event: GuildUnbanEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackBans)
+        if (configuration.isTrackingBans(event.guild.id))
             logger.buildMemberUnbanEmbed(event)
     }
 }

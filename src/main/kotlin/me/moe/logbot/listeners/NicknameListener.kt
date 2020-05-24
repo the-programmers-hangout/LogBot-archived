@@ -8,11 +8,8 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameE
 class NicknameListener(private val configuration: Configuration, private val logger: LoggingService) {
 
     @Subscribe
-    fun onRoleAdd(event: GuildMemberUpdateNicknameEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackNicknames)
+    fun onNicknameChange(event: GuildMemberUpdateNicknameEvent) {
+        if (configuration.isTrackingNicknames(event.guild.id))
             logger.buildNicknameChangeEmbed(event)
     }
 }

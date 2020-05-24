@@ -17,37 +17,25 @@ class ChannelListener(private val configuration: Configuration, private val logg
 
     @Subscribe
     fun onSlowmodeUpdate(event: TextChannelUpdateSlowmodeEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackChannels)
+        if (configuration.isTrackingChannels(event.guild.id))
             logger.buildSlowmodeUpdateEmbed(event)
     }
 
     @Subscribe
     fun onTextChannelCreate(event: TextChannelCreateEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackChannels)
+        if (configuration.isTrackingChannels(event.guild.id))
             logger.buildChannelCreateEmbed(event)
     }
 
     @Subscribe
     fun onTextChannelDelete(event: TextChannelDeleteEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackChannels)
+        if (configuration.isTrackingChannels(event.guild.id))
             logger.buildChannelDeleteEmbed(event)
     }
 
     @Subscribe
     fun onTextChannelUpdateName(event: TextChannelUpdateNameEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackChannels)
+        if (configuration.isTrackingChannels(event.guild.id))
             logger.buildChannelUpdateNameEmbed(event)
     }
 
@@ -58,10 +46,7 @@ class ChannelListener(private val configuration: Configuration, private val logg
             return
         }
 
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackChannels)
+        if (configuration.isTrackingChannels(event.guild.id))
             logger.buildChannelUpdateTopicEmbed(event)
     }
 }

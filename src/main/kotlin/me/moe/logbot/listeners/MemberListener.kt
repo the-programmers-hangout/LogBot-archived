@@ -10,23 +10,17 @@ class MemberListener(private val configuration: Configuration, private val logge
 
     @Subscribe
     fun onMemberJoin(event: GuildMemberJoinEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
-        if (config.trackMembers)
+        if (configuration.isTrackingMembers(event.guild.id))
             logger.buildMemberJoinEmbed(event)
     }
 
     @Subscribe
     fun onMemberLeave(event: GuildMemberRemoveEvent) {
-        val config = configuration.getGuildConfig(event.guild.id)
-                ?: return
-
         if (event.guild.retrieveBanList().complete().any { it.user.id == event.user.id }) {
-            if (config.trackBans)
+            if (configuration.isTrackingBans(event.guild.id))
                 logger.buildMemberBanEmbed(event)
         } else {
-            if (config.trackMembers)
+            if (configuration.isTrackingMembers(event.guild.id))
                 logger.buildMemberLeaveEmbed(event)
         }
 
