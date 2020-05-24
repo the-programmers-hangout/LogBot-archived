@@ -7,6 +7,9 @@ import me.moe.logbot.data.Configuration
 import me.moe.logbot.extensions.*
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.GatewayPingEvent
+import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
+import net.dv8tion.jda.api.events.channel.category.CategoryDeleteEvent
+import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdateNameEvent
 import net.dv8tion.jda.api.events.channel.text.TextChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent
 import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateNameEvent
@@ -473,6 +476,55 @@ class LoggingService(private val config: Configuration) {
                 createContinuableField("New topic", event.newTopic!!)
         }
     }
+
+    /*
+
+        Category
+
+     */
+
+    fun buildCategoryCreatedEvent(event: CategoryCreateEvent) = withLog(event.guild) {
+        embed {
+            title = "Category created"
+            color = successColor
+
+            field {
+                name = "Category"
+                value = event.category.descriptor()
+            }
+        }
+    }
+
+    fun buildCategoryDeletedEvent(event: CategoryDeleteEvent) = withLog(event.guild) {
+        embed {
+            title = "Category deleted"
+            color = failureColor
+
+            field {
+                name = "Category"
+                value = event.category.descriptor()
+            }
+        }
+    }
+
+    fun buildCategoryUpdatedEvent(event: CategoryUpdateNameEvent) = withLog(event.guild) {
+        embed {
+            title = "Category updated"
+            color = infoColor
+
+            field {
+                name = "Category"
+                value = event.category.descriptor()
+            }
+
+            field {
+                name = "Old name"
+                value = event.oldValue
+            }
+        }
+    }
+
+
 
 
 

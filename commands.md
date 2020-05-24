@@ -12,7 +12,6 @@
 | HistoryChannel     | TextChannel | No Description Provider |
 | LoggingChannel     | TextChannel | No Description Provider |
 | MessageCacheAmount | Integer     | No Description Provider |
-| Setup              | <none>      | No Description Provider |
 | StaffRole          | Role        | No Description Provider |
 | ViewConfiguration  | <none>      | No Description Provider |
 
